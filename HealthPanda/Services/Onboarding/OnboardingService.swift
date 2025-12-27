@@ -18,7 +18,11 @@ enum DeviceCompatibilityStatus: Equatable {
 }
 
 @Observable
-final class OnboardingService {
+final class OnboardingService: OnboardingServiceProtocol {
+
+    // MARK: - Shared Instance
+
+    static let shared = OnboardingService()
 
     private(set) var deviceCompatibility: DeviceCompatibilityStatus = .compatible
     private(set) var aiStatus: AiAvailabilityStatus = .disabledByUser
