@@ -26,7 +26,7 @@ struct HomeView: View {
                     if isLoading {
                         loadingView
                     } else {
-                        tileGrid
+                        contentView
                     }
                 }
                 .padding()
@@ -59,18 +59,16 @@ struct HomeView: View {
         isLoading = true
         defer { isLoading = false }
 
-        // Check system status concurrently
         async let ai = aiService.checkAvailability()
         async let health = healthService.checkAuthorizationStatus()
 
         aiStatus = await ai
         healthStatus = await health
 
-        // Load cached summary if available
+        // Load health data regardless of AI status
         if healthStatus == .authorized {
             heartSummary = await HealthRepository.shared.getCachedSummary(for: .heart)
 
-            // Refresh if stale or missing
             if heartSummary == nil || heartSummary?.isStale == true {
                 heartSummary = await HealthRepository.shared.refreshHeart()
             }
@@ -89,11 +87,14 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - Tile Grid
+    // MARK: - Content
 
-    private var tileGrid: some View {
+    private var contentView: some View {
         VStack(spacing: 12) {
+            // System status tiles (errors)
             systemStatusTiles
+
+            // Health category tiles (always show if authorized)
             if healthStatus == .authorized {
                 heartTile
             }
@@ -104,6 +105,7 @@ struct HomeView: View {
 
     @ViewBuilder
     private var systemStatusTiles: some View {
+        // AI unavailable - show error but don't block health data
         if case .unavailableDevice(let reason) = aiStatus {
             ErrorTile(
                 icon: "cpu",
@@ -116,12 +118,13 @@ struct HomeView: View {
             ErrorTile(
                 icon: "brain",
                 title: "Apple Intelligence Required",
-                subtitle: "Enable in Settings to continue"
+                subtitle: "Enable in Settings for personalized insights"
             ) {
                 openSettings()
             }
         }
 
+        // Health errors
         if healthStatus == .unavailable {
             ErrorTile(
                 icon: "heart.slash",
@@ -178,7 +181,6 @@ struct HomeView: View {
                 }
             }
         } else {
-            // Loading state for heart tile
             Tile(
                 icon: category.icon,
                 iconColor: category.color,
