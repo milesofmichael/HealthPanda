@@ -12,7 +12,7 @@ import OSLog
 import FoundationModels
 #endif
 
-final class FoundationModelService: AiServiceProtocol, SummaryServiceProtocol, @unchecked Sendable {
+final class FoundationModelService: AiServiceProtocol, SummaryServiceProtocol {
 
     static let shared = FoundationModelService()
 

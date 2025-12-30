@@ -8,7 +8,7 @@
 import CoreData
 import OSLog
 
-final class HealthCache: HealthCacheProtocol, @unchecked Sendable {
+final class HealthCache: HealthCacheProtocol {
 
     static let shared = HealthCache()
 

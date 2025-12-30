@@ -8,7 +8,7 @@
 import HealthKit
 import OSLog
 
-final class HealthFetcher: HealthFetcherProtocol, @unchecked Sendable {
+final class HealthFetcher: HealthFetcherProtocol {
 
     static let shared = HealthFetcher()
 
