@@ -75,7 +75,7 @@ struct Tile: View {
                     Text(subtitle)
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 Spacer()
@@ -88,7 +88,7 @@ struct Tile: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
-            .frame(height: 70)
+            .frame(minHeight: 70)
             .background(style.backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay(
