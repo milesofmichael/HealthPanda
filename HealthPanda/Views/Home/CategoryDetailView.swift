@@ -141,7 +141,7 @@ struct CategoryDetailView: View {
             Spacer()
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.backgroundSecondary)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -160,9 +160,9 @@ struct CategoryDetailView: View {
 
     private func statusColor(for status: CategoryStatus) -> Color {
         switch status {
-        case .ready: return .green
-        case .missingCritical: return .yellow
-        case .noData: return .red
+        case .ready: return .statusSuccess
+        case .missingCritical: return .statusWarning
+        case .noData: return .statusError
         }
     }
 
@@ -213,13 +213,13 @@ struct CategoryDetailView: View {
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(category.color)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.textOnColor)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .padding(.top, 8)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.backgroundSecondary)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -247,7 +247,7 @@ struct CategoryDetailView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.backgroundSecondary)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

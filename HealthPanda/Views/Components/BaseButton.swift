@@ -18,7 +18,7 @@ import SwiftUI
 /// Configuration for base button appearance.
 /// Centralizes styling properties for consistent design across the app.
 struct BaseButtonStyle {
-    var backgroundColor: Color = Color(.secondarySystemBackground)
+    var backgroundColor: Color = .backgroundSecondary
     var foregroundColor: Color = .primary
     var cornerRadius: CGFloat = 14
     var horizontalPadding: CGFloat = 16
@@ -29,7 +29,7 @@ struct BaseButtonStyle {
     static var primary: BaseButtonStyle {
         BaseButtonStyle(
             backgroundColor: .accentColor,
-            foregroundColor: .white
+            foregroundColor: .textOnColor
         )
     }
 
@@ -41,7 +41,7 @@ struct BaseButtonStyle {
     /// Preset style for disabled state
     static func disabled(_ style: BaseButtonStyle) -> BaseButtonStyle {
         var copy = style
-        copy.backgroundColor = .gray
+        copy.backgroundColor = .statusDisabled
         copy.isEnabled = false
         return copy
     }

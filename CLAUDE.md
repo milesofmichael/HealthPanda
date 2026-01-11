@@ -19,7 +19,7 @@ features
 - home screen has health categories (heart, sleep, mindfulness, etc)
     - clicking on categories will give LLM historical HealthKit data to see if you're trending positive or negative, then display to the user encouragement if they're trending positive, and what they can improve if a vital is trending negative
     - if there's zero data from the categories we tried to pull from, use the LLM to suggest that the user sync their data or give us more permissions to access that specific health information
-    - each category should use teh cache if it's not worth updating the data
+    - each category should use the cache if it's not worth updating the data
         - monthly = update once a week
         - weekly = update once every 3 days
         - daily = update daily
@@ -35,3 +35,5 @@ AI dev advice
 - build and run the app on the iPhone 17 Pro. you're using Xcode 26.2 to build this, same with the CLT
 - this app uses an auto-generated Info.plist file for the app's settings instead of creating a custom one, in parity with the latest iOS dev paradigm
     - anything you'd normally use Info.plist for, check the .xcodeproj file and do it there instead
+- any colors in the UI should come from (or be added to) Colors.swift
+    - use Color Literal and Hex for color values

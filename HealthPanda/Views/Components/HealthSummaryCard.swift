@@ -19,7 +19,7 @@ struct HealthSummaryCard: View {
             contentView
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.backgroundSecondary)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -105,7 +105,7 @@ struct HealthSummaryCard: View {
     private var errorView: some View {
         HStack(spacing: 8) {
             Image(systemName: "exclamationmark.triangle")
-                .foregroundStyle(.orange)
+                .foregroundStyle(Color.statusStable)
             Text("Unable to load data")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -121,7 +121,7 @@ struct HealthSummaryCard: View {
     HealthSummaryCard(
         timeSpan: .daily,
         loadingState: .loading,
-        accentColor: .pink
+        accentColor: .categoryHeart
     )
     .padding()
 }
@@ -136,7 +136,7 @@ struct HealthSummaryCard: View {
             summaryText: "Your heart rate is 5% lower today, showing great recovery.",
             metricsDisplay: "68 BPM avg · 55 resting · 98% O₂"
         )),
-        accentColor: .pink
+        accentColor: .categoryHeart
     )
     .padding()
 }
@@ -145,7 +145,7 @@ struct HealthSummaryCard: View {
     HealthSummaryCard(
         timeSpan: .monthly,
         loadingState: .failed,
-        accentColor: .pink
+        accentColor: .categoryHeart
     )
     .padding()
 }

@@ -44,11 +44,11 @@ enum HealthCategory: String, CaseIterable, Codable, Sendable {
 
     var color: Color {
         switch self {
-        case .heart: return .pink
-        case .sleep: return .indigo
-        case .mindfulness: return .cyan
-        case .performance: return .green
-        case .vitality: return .red
+        case .heart: return .categoryHeart
+        case .sleep: return .categorySleep
+        case .mindfulness: return .categoryMindfulness
+        case .performance: return .categoryPerformance
+        case .vitality: return .categoryVitality
         }
     }
 

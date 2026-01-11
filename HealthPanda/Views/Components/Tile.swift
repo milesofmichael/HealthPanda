@@ -16,17 +16,17 @@ enum TileStyle {
 
     var backgroundColor: Color {
         switch self {
-        case .normal: return Color(.systemBackground)
-        case .warning: return Color.yellow.opacity(0.15)
-        case .error: return Color.red.opacity(0.15)
+        case .normal: return .backgroundPrimary
+        case .warning: return .statusWarning.opacity(0.15)
+        case .error: return .statusError.opacity(0.15)
         }
     }
 
     var borderColor: Color {
         switch self {
-        case .normal: return Color(.systemGray4)
-        case .warning: return Color.yellow
-        case .error: return Color.red
+        case .normal: return .borderNormal
+        case .warning: return .statusWarning
+        case .error: return .statusError
         }
     }
 }
@@ -124,7 +124,7 @@ struct ErrorTile: View {
     var body: some View {
         Tile(
             icon: icon,
-            iconColor: .red,
+            iconColor: .statusError,
             title: title,
             subtitle: subtitle,
             style: .error,
@@ -157,7 +157,7 @@ struct WarningTile: View {
     var body: some View {
         Tile(
             icon: icon,
-            iconColor: .orange,
+            iconColor: .statusStable,
             title: title,
             subtitle: subtitle,
             style: .warning,
@@ -172,7 +172,7 @@ struct WarningTile: View {
     VStack(spacing: 16) {
         Tile(
             icon: "heart.fill",
-            iconColor: .pink,
+            iconColor: .categoryHeart,
             title: "Heart",
             subtitle: "Heart rate, blood pressure"
         )

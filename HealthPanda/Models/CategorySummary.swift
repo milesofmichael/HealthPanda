@@ -31,9 +31,9 @@ enum TrendDirection: String, Codable, Sendable {
 
     var color: Color {
         switch self {
-        case .improving: return .green
-        case .stable: return .orange
-        case .declining: return .red
+        case .improving: return .statusSuccess
+        case .stable: return .statusStable
+        case .declining: return .statusError
         }
     }
 }
