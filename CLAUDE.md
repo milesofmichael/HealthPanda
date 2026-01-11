@@ -32,7 +32,6 @@ AI dev advice
     - core components should have a base class (eg. BaseButton -> CheckboxButton)
 - since this is a portfolio project for large tech companies, ensure that it uses data structures in an efficient manner
     - when implementing a feature that could take a while, use the most efficient Big O notation possible, and explain your decision with comments
-- build and run the app on the iPhone 17 Pro. you're using Xcode 26.2 to build this, same with the CLT
 - this app uses an auto-generated Info.plist file for the app's settings instead of creating a custom one, in parity with the latest iOS dev paradigm
     - anything you'd normally use Info.plist for, check the .xcodeproj file and do it there instead
 - any colors in the UI should come from (or be added to) Colors.swift

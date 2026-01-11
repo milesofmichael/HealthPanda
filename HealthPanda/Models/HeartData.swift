@@ -14,20 +14,19 @@ struct HeartData: Sendable {
     let period: DateInterval
     let heartRate: Double?
     let restingHeartRate: Double?
-    let bloodOxygen: Double?
     let walkingHeartRate: Double?
     let hrv: Double?
 
     var hasCriticalData: Bool { heartRate != nil }
 
     var hasAnyData: Bool {
-        heartRate != nil || restingHeartRate != nil || bloodOxygen != nil ||
+        heartRate != nil || restingHeartRate != nil ||
         walkingHeartRate != nil || hrv != nil
     }
 
     static func empty(for period: DateInterval) -> HeartData {
         HeartData(period: period, heartRate: nil, restingHeartRate: nil,
-                  bloodOxygen: nil, walkingHeartRate: nil, hrv: nil)
+                  walkingHeartRate: nil, hrv: nil)
     }
 }
 
@@ -48,10 +47,6 @@ struct HeartComparison: HealthComparison {
 
     var restingHeartRateChange: Double? {
         percentChange(from: previous.restingHeartRate, to: current.restingHeartRate)
-    }
-
-    var bloodOxygenChange: Double? {
-        percentChange(from: previous.bloodOxygen, to: current.bloodOxygen)
     }
 
     var hrvChange: Double? {
@@ -83,9 +78,6 @@ struct HeartComparison: HealthComparison {
         if let rhr = current.restingHeartRate {
             lines.append("Resting HR: \(rhr.wholeNumber) BPM\(restingHeartRateChange.parentheticalChange)")
         }
-        if let o2 = current.bloodOxygen {
-            lines.append("Blood oxygen: \(o2.wholeNumber)%\(bloodOxygenChange.parentheticalChange)")
-        }
         if let hrv = current.hrv {
             lines.append("HRV: \(hrv.wholeNumber) ms\(hrvChange.parentheticalChange)")
         }
@@ -102,9 +94,6 @@ struct HeartComparison: HealthComparison {
         }
         if let rhr = current.restingHeartRate {
             parts.append("\(rhr.wholeNumber) resting")
-        }
-        if let o2 = current.bloodOxygen {
-            parts.append("\(o2.wholeNumber)% O₂")
         }
 
         return parts.joined(separator: " · ")

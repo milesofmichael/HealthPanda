@@ -28,7 +28,7 @@ actor HealthService: HealthServiceProtocol {
     // MARK: - Health Data Type Definitions
 
     private let quantityTypesByCategory: [HealthCategory: [HKQuantityTypeIdentifier]] = [
-        .heart: [.heartRate, .restingHeartRate, .oxygenSaturation,
+        .heart: [.heartRate, .restingHeartRate,
                  .walkingHeartRateAverage, .heartRateVariabilitySDNN],
         .sleep: [],
         .mindfulness: [],

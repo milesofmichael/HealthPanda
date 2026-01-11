@@ -279,7 +279,7 @@ struct CategoryDetailView: View {
             category: .heart,
             status: .ready,
             smallSummary: "Heart rate trending up 3%",
-            largeSummary: "Your heart rate has increased slightly this month compared to last month, averaging 72 BPM versus 70 BPM. Your resting heart rate remains healthy at 58 BPM. Blood oxygen levels are excellent at 98%. Overall, your cardiovascular metrics indicate good heart health.",
+            largeSummary: "Your heart rate has increased slightly this month compared to last month, averaging 72 BPM versus 70 BPM. Your resting heart rate remains healthy at 58 BPM. Overall, your cardiovascular metrics indicate good heart health.",
             lastUpdated: Date()
         ),
         healthService: HealthService.shared

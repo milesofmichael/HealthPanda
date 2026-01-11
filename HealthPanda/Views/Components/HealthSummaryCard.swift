@@ -134,7 +134,7 @@ struct HealthSummaryCard: View {
             trend: .improving,
             shortSummary: "Your summary is short.",
             summaryText: "Your heart rate is 5% lower today, showing great recovery.",
-            metricsDisplay: "68 BPM avg · 55 resting · 98% O₂"
+            metricsDisplay: "68 BPM avg · 55 resting"
         )),
         accentColor: .categoryHeart
     )
