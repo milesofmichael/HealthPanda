@@ -96,4 +96,8 @@ struct MindfulnessComparison: HealthComparison {
         case .declining: return "Your mindfulness practice has decreased."
         }
     }
+
+    /// Per-metric trends for mindfulness data.
+    /// TODO: Implement individual metric tracking for minutes, sessions, etc.
+    var metricTrends: [MetricTrend] { [] }
 }

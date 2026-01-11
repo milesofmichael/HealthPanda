@@ -111,4 +111,8 @@ struct SleepComparison: HealthComparison {
             return "Your sleep duration has decreased."
         }
     }
+
+    /// Per-metric trends for sleep data.
+    /// TODO: Implement individual metric tracking for sleep stages.
+    var metricTrends: [MetricTrend] { [] }
 }

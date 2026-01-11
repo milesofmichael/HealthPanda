@@ -160,7 +160,9 @@ final class HealthCache: HealthCacheProtocol {
             trend: TrendDirection(rawValue: trendString) ?? .stable,
             shortSummary: shortSummary,
             summaryText: summaryText,
-            metricsDisplay: cached.metricsDisplay ?? ""
+            metricsDisplay: cached.metricsDisplay ?? "",
+            // Note: metricTrends are not persisted in cache, they're regenerated from data
+            metricTrends: []
         )
     }
 }

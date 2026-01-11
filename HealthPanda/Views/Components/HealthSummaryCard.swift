@@ -35,26 +35,7 @@ struct HealthSummaryCard: View {
                 .font(.headline)
 
             Spacer()
-
-            if let summary = loadingState.summary {
-                trendBadge(trend: summary.trend)
-            }
         }
-    }
-
-    private func trendBadge(trend: TrendDirection) -> some View {
-        HStack(spacing: 4) {
-            Image(systemName: trend.icon)
-                .font(.caption)
-            Text(trend.rawValue.capitalized)
-                .font(.caption)
-                .fontWeight(.medium)
-        }
-        .foregroundStyle(trend.color)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(trend.color.opacity(0.15))
-        .clipShape(Capsule())
     }
 
     // MARK: - Content
@@ -94,12 +75,51 @@ struct HealthSummaryCard: View {
                 .font(.subheadline)
                 .foregroundStyle(.primary)
 
-            if !summary.metricsDisplay.isEmpty {
-                Text(summary.metricsDisplay)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            // Per-metric trend indicators
+            if !summary.metricTrends.isEmpty {
+                metricTrendsView(trends: summary.metricTrends)
             }
         }
+    }
+
+    /// Displays individual metric trends with color-coded indicators.
+    /// Each metric shows its value and a trend arrow (green = improving, red = declining).
+    private func metricTrendsView(trends: [MetricTrend]) -> some View {
+        // Wrap metrics in rows of 2 for consistent layout
+        // O(n) layout where n = number of metrics (typically 2-4)
+        let rows = stride(from: 0, to: trends.count, by: 2).map { index in
+            Array(trends[index..<min(index + 2, trends.count)])
+        }
+
+        return VStack(alignment: .leading, spacing: 6) {
+            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                HStack(spacing: 8) {
+                    ForEach(row, id: \.name) { metric in
+                        metricTrendItem(metric)
+                    }
+                    Spacer()
+                }
+            }
+        }
+    }
+
+    /// Single metric trend indicator with name, value, and direction arrow.
+    private func metricTrendItem(_ metric: MetricTrend) -> some View {
+        HStack(spacing: 4) {
+            // Trend arrow with semantic color
+            Image(systemName: metric.icon)
+                .font(.caption2)
+                .foregroundStyle(metric.color)
+
+            // Metric name and value
+            Text("\(metric.name): \(metric.value)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(metric.color.opacity(0.1))
+        .clipShape(Capsule())
     }
 
     private var errorView: some View {
@@ -134,7 +154,13 @@ struct HealthSummaryCard: View {
             trend: .improving,
             shortSummary: "Your summary is short.",
             summaryText: "Your heart rate is 5% lower today, showing great recovery.",
-            metricsDisplay: "68 BPM avg · 55 resting"
+            metricsDisplay: "68 BPM avg · 55 resting",
+            metricTrends: [
+                MetricTrend(name: "Avg HR", value: "68 BPM", direction: .improving),
+                MetricTrend(name: "Resting", value: "55 BPM", direction: .improving),
+                MetricTrend(name: "HRV", value: "42 ms", direction: .declining),
+                MetricTrend(name: "Walking", value: "95 BPM", direction: .stable)
+            ]
         )),
         accentColor: .categoryHeart
     )

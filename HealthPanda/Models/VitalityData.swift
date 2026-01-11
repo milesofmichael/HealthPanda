@@ -80,4 +80,8 @@ struct VitalityComparison: HealthComparison {
     var fallbackSummary: String {
         "Your vitals are within normal range."
     }
+
+    /// Per-metric trends for vitality data.
+    /// TODO: Implement individual metric tracking for temperature, BP, etc.
+    var metricTrends: [MetricTrend] { [] }
 }

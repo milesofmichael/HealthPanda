@@ -101,4 +101,8 @@ struct PerformanceComparison: HealthComparison {
         case .declining: return "Your activity levels have decreased."
         }
     }
+
+    /// Per-metric trends for performance data.
+    /// TODO: Implement individual metric tracking for steps, calories, etc.
+    var metricTrends: [MetricTrend] { [] }
 }

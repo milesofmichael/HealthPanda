@@ -85,7 +85,8 @@ final class FoundationModelService: AiServiceProtocol, SummaryServiceProtocol {
             trend: comparison.trend,
             shortSummary: response.content.shortSummary,
             summaryText: response.content.detailedSummary,
-            metricsDisplay: comparison.metricsDisplay
+            metricsDisplay: comparison.metricsDisplay,
+            metricTrends: comparison.metricTrends
         )
         #else
         return generateFallbackSummary(comparison: comparison, timeSpan: timeSpan)
@@ -103,7 +104,8 @@ final class FoundationModelService: AiServiceProtocol, SummaryServiceProtocol {
             trend: comparison.trend,
             shortSummary: comparison.fallbackShortSummary,
             summaryText: comparison.fallbackSummary,
-            metricsDisplay: comparison.metricsDisplay
+            metricsDisplay: comparison.metricsDisplay,
+            metricTrends: comparison.metricTrends
         )
     }
 }

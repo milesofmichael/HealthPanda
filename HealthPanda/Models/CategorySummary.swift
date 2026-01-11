@@ -61,6 +61,9 @@ struct TimespanSummary: Sendable {
     let summaryText: String
     /// Formatted metrics from the data model (e.g., "68 BPM avg · 55 resting")
     let metricsDisplay: String
+    /// Individual trend indicators for each metric.
+    /// Used to show per-metric status instead of aggregate trend badge.
+    let metricTrends: [MetricTrend]
 
     static func noData(for timeSpan: TimeSpan) -> TimespanSummary {
         TimespanSummary(
@@ -68,7 +71,8 @@ struct TimespanSummary: Sendable {
             trend: .stable,
             shortSummary: "No data available",
             summaryText: "No data available.",
-            metricsDisplay: ""
+            metricsDisplay: "",
+            metricTrends: []
         )
     }
 }

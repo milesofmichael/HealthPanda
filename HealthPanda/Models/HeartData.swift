@@ -49,6 +49,10 @@ struct HeartComparison: HealthComparison {
         percentChange(from: previous.restingHeartRate, to: current.restingHeartRate)
     }
 
+    var walkingHeartRateChange: Double? {
+        percentChange(from: previous.walkingHeartRate, to: current.walkingHeartRate)
+    }
+
     var hrvChange: Double? {
         percentChange(from: previous.hrv, to: current.hrv)
     }
@@ -58,28 +62,118 @@ struct HeartComparison: HealthComparison {
         return ((curr - prev) / prev) * 100
     }
 
+    // MARK: - Per-Metric Trends
+
+    /// Individual trend indicators for each heart metric.
+    /// For heart rate metrics, LOWER is better. For HRV, HIGHER is better.
+    var metricTrends: [MetricTrend] {
+        var trends: [MetricTrend] = []
+
+        // Average heart rate - lower is generally better (indicates efficiency)
+        if let hr = current.heartRate {
+            let direction = trendDirection(for: heartRateChange, lowerIsBetter: true)
+            trends.append(MetricTrend(
+                name: "Avg HR",
+                value: "\(hr.wholeNumber) BPM",
+                direction: direction
+            ))
+        }
+
+        // Resting heart rate - lower is better (indicates cardiovascular fitness)
+        if let rhr = current.restingHeartRate {
+            let direction = trendDirection(for: restingHeartRateChange, lowerIsBetter: true)
+            trends.append(MetricTrend(
+                name: "Resting",
+                value: "\(rhr.wholeNumber) BPM",
+                direction: direction
+            ))
+        }
+
+        // Walking heart rate - lower is better (indicates fitness)
+        if let whr = current.walkingHeartRate {
+            let direction = trendDirection(for: walkingHeartRateChange, lowerIsBetter: true)
+            trends.append(MetricTrend(
+                name: "Walking",
+                value: "\(whr.wholeNumber) BPM",
+                direction: direction
+            ))
+        }
+
+        // HRV - HIGHER is better (indicates recovery and adaptability)
+        if let hrv = current.hrv {
+            let direction = trendDirection(for: hrvChange, lowerIsBetter: false)
+            trends.append(MetricTrend(
+                name: "HRV",
+                value: "\(hrv.wholeNumber) ms",
+                direction: direction
+            ))
+        }
+
+        return trends
+    }
+
+    /// Determines trend direction for a metric given its change percentage.
+    /// - Parameters:
+    ///   - change: Percentage change (positive = increased, negative = decreased)
+    ///   - lowerIsBetter: If true, a decrease is "improving"; if false, an increase is "improving"
+    private func trendDirection(for change: Double?, lowerIsBetter: Bool) -> TrendDirection {
+        guard let change else { return .stable }
+        let threshold = 3.0 // 3% change threshold for significance
+
+        if abs(change) < threshold { return .stable }
+
+        // If value went down (negative change)
+        if change < 0 {
+            return lowerIsBetter ? .improving : .declining
+        }
+        // If value went up (positive change)
+        return lowerIsBetter ? .declining : .improving
+    }
+
     // MARK: - HealthComparison Protocol
 
-    /// Determines trend based on heart rate (lower is better for resting metrics).
+    /// Aggregate trend based on majority of metrics.
+    /// Counts improving vs declining metrics to determine overall direction.
     var trend: TrendDirection {
-        guard let change = heartRateChange else { return .stable }
-        if change < -3 { return .improving }
-        if change > 3 { return .declining }
+        let trends = metricTrends
+        guard !trends.isEmpty else { return .stable }
+
+        let improving = trends.filter { $0.direction == .improving }.count
+        let declining = trends.filter { $0.direction == .declining }.count
+
+        if improving > declining { return .improving }
+        if declining > improving { return .declining }
         return .stable
     }
 
     /// Prompt for LLM to analyze this comparison.
+    /// Provides clear instructions for analyzing each metric individually.
     var promptText: String {
-        var lines = ["Analyze this heart health data. Give a brief summary."]
+        var lines = [
+            """
+            Analyze each heart metric individually. For heart rate metrics, LOWER values indicate \
+            better cardiovascular fitness. For HRV, HIGHER values indicate better recovery. \
+            Be specific about which metrics improved and which declined - do not say "overall \
+            improvement" unless ALL metrics improved. Keep response under 100 characters.
+            """
+        ]
 
         if let hr = current.heartRate {
-            lines.append("Heart rate: \(hr.wholeNumber) BPM\(heartRateChange.parentheticalChange)")
+            let trend = heartRateChange.map { $0 < 0 ? "improved" : ($0 > 0 ? "worsened" : "stable") } ?? "stable"
+            lines.append("Avg heart rate: \(hr.wholeNumber) BPM\(heartRateChange.parentheticalChange) [\(trend)]")
         }
         if let rhr = current.restingHeartRate {
-            lines.append("Resting HR: \(rhr.wholeNumber) BPM\(restingHeartRateChange.parentheticalChange)")
+            let trend = restingHeartRateChange.map { $0 < 0 ? "improved" : ($0 > 0 ? "worsened" : "stable") } ?? "stable"
+            lines.append("Resting HR: \(rhr.wholeNumber) BPM\(restingHeartRateChange.parentheticalChange) [\(trend)]")
+        }
+        if let whr = current.walkingHeartRate {
+            let trend = walkingHeartRateChange.map { $0 < 0 ? "improved" : ($0 > 0 ? "worsened" : "stable") } ?? "stable"
+            lines.append("Walking HR: \(whr.wholeNumber) BPM\(walkingHeartRateChange.parentheticalChange) [\(trend)]")
         }
         if let hrv = current.hrv {
-            lines.append("HRV: \(hrv.wholeNumber) ms\(hrvChange.parentheticalChange)")
+            // HRV is inverse - higher is better
+            let trend = hrvChange.map { $0 > 0 ? "improved" : ($0 < 0 ? "worsened" : "stable") } ?? "stable"
+            lines.append("HRV: \(hrv.wholeNumber) ms\(hrvChange.parentheticalChange) [\(trend)]")
         }
 
         return lines.joined(separator: "\n")
