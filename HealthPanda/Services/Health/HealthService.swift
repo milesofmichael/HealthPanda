@@ -206,7 +206,7 @@ actor HealthService: HealthServiceProtocol {
         category: HealthCategory,
         timeSpan: TimeSpan
     ) async -> (TimeSpan, SummaryLoadingState) {
-        // Check cache first for fast retrieval
+        // Check cache first for fast retrieval (includes persisted metricTrends)
         if let cached = await cache.getTimespanSummary(for: category, timeSpan: timeSpan) {
             logger.debug("Cache hit for \(category.rawValue) \(timeSpan.rawValue)")
             return (timeSpan, .loaded(cached))

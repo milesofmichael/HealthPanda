@@ -116,6 +116,11 @@ final class HealthCache: HealthCacheProtocol {
             cached.lastUpdated = Date()
             cached.status = "ready"
 
+            // Encode metricTrends as JSON data for persistence
+            if !summary.metricTrends.isEmpty {
+                cached.metricTrendsData = try? JSONEncoder().encode(summary.metricTrends)
+            }
+
             try context.save()
             logger.debug("Saved \(summary.timeSpan.rawValue) summary for \(category.rawValue)")
         } catch {
@@ -155,14 +160,19 @@ final class HealthCache: HealthCacheProtocol {
             return nil
         }
 
+        // Decode metricTrends from JSON data if available
+        var metricTrends: [MetricTrend] = []
+        if let data = cached.metricTrendsData {
+            metricTrends = (try? JSONDecoder().decode([MetricTrend].self, from: data)) ?? []
+        }
+
         return TimespanSummary(
             timeSpan: timeSpan,
             trend: TrendDirection(rawValue: trendString) ?? .stable,
             shortSummary: shortSummary,
             summaryText: summaryText,
             metricsDisplay: cached.metricsDisplay ?? "",
-            // Note: metricTrends are not persisted in cache, they're regenerated from data
-            metricTrends: []
+            metricTrends: metricTrends
         )
     }
 }

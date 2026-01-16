@@ -12,6 +12,7 @@ import SwiftUI
 struct HomeView: View {
     // Local UI state
     @State private var isLoading = true
+    @State private var isRefreshing = false
     @State private var aiStatus: AiAvailabilityStatus = .available
     @State private var summaries: [HealthCategory: CategorySummary] = [:]
     @State private var selectedCategory: HealthCategory?
@@ -87,14 +88,32 @@ struct HomeView: View {
     }
 
     private func refresh() async {
+        // Guard against concurrent refreshes to prevent race conditions
+        guard !isRefreshing else { return }
+        isRefreshing = true
+        defer { isRefreshing = false }
+
         aiStatus = await aiService.checkAvailability()
 
-        // Only refresh categories that have been previously authorized
-        for category in HealthCategory.allCases {
-            let status = await healthService.checkAuthorizationStatus(for: category)
-            if status == .authorized {
-                let summary = await healthService.refreshCategory(category)
-                summaries[category] = summary
+        // Refresh authorized categories concurrently using TaskGroup
+        // This prevents sequential blocking and reduces total refresh time
+        await withTaskGroup(of: (HealthCategory, CategorySummary?).self) { group in
+            for category in HealthCategory.allCases {
+                group.addTask {
+                    let status = await self.healthService.checkAuthorizationStatus(for: category)
+                    if status == .authorized {
+                        let summary = await self.healthService.refreshCategory(category)
+                        return (category, summary)
+                    }
+                    return (category, nil)
+                }
+            }
+
+            // Collect results as they complete
+            for await (category, summary) in group {
+                if let summary {
+                    summaries[category] = summary
+                }
             }
         }
     }

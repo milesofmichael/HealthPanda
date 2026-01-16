@@ -12,7 +12,8 @@ import SwiftUI
 /// Trend indicator for an individual health metric.
 /// Used to show per-metric status in the UI rather than a single aggregate trend.
 /// Generic enough to be used across all health categories (Heart, Sleep, etc.).
-struct MetricTrend: Sendable {
+/// Codable for persistence in Core Data cache.
+struct MetricTrend: Sendable, Codable {
     let name: String
     let value: String
     let direction: TrendDirection

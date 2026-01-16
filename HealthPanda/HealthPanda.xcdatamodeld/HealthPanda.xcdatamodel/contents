@@ -5,6 +5,7 @@
         <attribute name="largeSummary" attributeType="String"/>
         <attribute name="lastUpdated" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="metricsDisplay" optional="YES" attributeType="String"/>
+        <attribute name="metricTrendsData" optional="YES" attributeType="Binary"/>
         <attribute name="smallSummary" attributeType="String"/>
         <attribute name="status" attributeType="String"/>
         <attribute name="timeSpan" optional="YES" attributeType="String"/>
