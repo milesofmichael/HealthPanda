@@ -13,16 +13,28 @@ technologies used
 - Delegates/Protocols for service class creation, for testing and modular purposes
     - the LLM protocol should be seperate and subscribed to by the Foundation Model service class, for future extendability by using API calls like Claude or OpenAI in the future
 
+fetching system design
+- all data is fetched from single function in HealthFetcher when app is loaded
+    - this same function should be attached to the refreshcontrol
+- app should then go through each category in background tasks, check the cache update schedule, and call the foundation model if an update is needed
+    - each update (monthly, daily, weekly) and each category should be a separate background async task
+    - come back to the main thread only to update the UI when each task completes 
+        - as each task individually completes, update the UI if it's a description on the home page, and update the CategoryDetailView if that category happens to be open at the time of update
+- when the user opens the CategoryDetailView, one of 2 scenarios should happen:
+    - they see the cached data that was stored in the cache or updated on app launch THEN stored in cache, OR
+    - the data is still updating for that category, in which case, you update that data on the main thread for that category when it's done updating 
+        - don't forget to update the cache too in this scenario
+
+
 features
-- onboarding to sync health data
 - cute Panda integration in the beautiful and functional UI (follows Apple Human Interface Guidelines)
 - home screen has health categories (heart, sleep, mindfulness, etc)
-    - clicking on categories will give LLM historical HealthKit data to see if you're trending positive or negative, then display to the user encouragement if they're trending positive, and what they can improve if a vital is trending negative
-    - if there's zero data from the categories we tried to pull from, use the LLM to suggest that the user sync their data or give us more permissions to access that specific health information
-    - each category should use the cache if it's not worth updating the data
-        - monthly = update once a week
-        - weekly = update once every 3 days
-        - daily = update daily
+- clicking on categories will give LLM historical HealthKit data to see if you're trending positive or negative for each metric, then display to the user encouragement if they're trending positive, and what they can improve if a vital is trending negative
+- if there's zero data from the categories we tried to pull from, suggest that the user sync their data or give us more permissions to access that specific health information
+- each category should use the cache if it's not worth updating the data
+    - monthly = update once a week
+    - weekly = update once every 3 days
+    - daily = update daily
 
 AI dev advice
 - use modern approachable 6.2 Swift Concurrency
