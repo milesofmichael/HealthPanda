@@ -24,6 +24,9 @@ fetching system design
     - they see the cached data that was stored in the cache or updated on app launch THEN stored in cache, OR
     - the data is still updating for that category, in which case, you update that data on the main thread for that category when it's done updating 
         - don't forget to update the cache too in this scenario
+- edge case! when user opens and gives permissions for the first time for each specific category, you should run the task for the specific category, not the whole monolith refresh function
+- these should all have very similar flows and have a source of truth, and all fetching and caching and foundation model data should subscribe to parents/protocols for reusability
+- refer to the `fetching-flow.md` file for more information on the exact flow
 
 categories and metrics checked
 - heart (HKQuantityTypeIdentifier)
